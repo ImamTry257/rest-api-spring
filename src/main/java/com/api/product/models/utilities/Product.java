@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 import javassist.SerialVersionUID;
 
@@ -23,9 +24,11 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // utk auto increment
     private Long id;
 
+    @NotEmpty(message = "Name is required")
     @Column(name = "product_name", length = 100) // anotasi column
     private String name;
 
+    @NotEmpty(message = "Description is required")
     @Column(name = "product_descriptions", length = 500) // anotasi column
     private String descriptions;
 

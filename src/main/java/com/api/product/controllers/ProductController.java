@@ -1,9 +1,16 @@
 package com.api.product.controllers;
 
+import javax.validation.Valid;
+
+import com.api.product.dto.ResponseData;
 import com.api.product.models.utilities.Product;
 import com.api.product.services.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,8 +35,24 @@ public class ProductController {
 
     // create
     @PostMapping
-    public Product create(@RequestBody Product product) {
-        return productService.save(product);
+    public ResponseEntity<ResponseData<Product>> create(@Valid @RequestBody Product product, Errors errors) {
+        ResponseData<Product> responseData = new ResponseData<>();
+
+        if (errors.hasErrors()) {
+
+            for (ObjectError error : errors.getAllErrors()) {
+                responseData.getMessage().add(error.getDefaultMessage());
+            }
+
+            responseData.setStatus(false);
+            responseData.setPayload(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
+        }
+
+        responseData.setStatus(true);
+        responseData.setPayload(productService.save(product));
+
+        return ResponseEntity.ok().body(responseData);
     }
 
     @GetMapping("/{id}")
@@ -39,8 +62,27 @@ public class ProductController {
 
     // update
     @PutMapping("/{id}")
-    public Product update(@PathVariable("id") Long id, @RequestBody Product newProduct) {
-        return productService.save(newProduct);
+    public ResponseEntity<ResponseData<Product>> update(@Valid @PathVariable("id") Long id,
+            @RequestBody Product newProduct, Errors errors) {
+
+        ResponseData<Product> responseData = new ResponseData<>();
+
+        if (errors.hasErrors()) {
+
+            for (ObjectError error : errors.getAllErrors()) {
+                responseData.getMessage().add(error.getDefaultMessage());
+            }
+
+            responseData.setStatus(false);
+            responseData.setPayload(null);
+
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(responseData);
+        }
+
+        responseData.setStatus(true);
+        responseData.setPayload(productService.save(newProduct));
+
+        return ResponseEntity.ok().body(responseData);
     }
 
     @DeleteMapping("/{id}")
