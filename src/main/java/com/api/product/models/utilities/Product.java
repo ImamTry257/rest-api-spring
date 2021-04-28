@@ -1,16 +1,19 @@
 package com.api.product.models.utilities;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
-
-import javassist.SerialVersionUID;
 
 @Entity
 @Table(name = "tbl_product")
@@ -33,6 +36,16 @@ public class Product implements Serializable {
     private String descriptions;
 
     private double prices;
+
+    // add relation many to one
+    @ManyToOne
+    private Category category;
+
+    // add relation many to many
+    @ManyToMany
+    // create new table to relation many to many
+    @JoinTable(name = "tbl_product_supplier", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "supplier_id"))
+    private Set<Supplier> suppliers;
 
     // build constructor
     public Product() {
@@ -77,5 +90,22 @@ public class Product implements Serializable {
 
     public void setPrice(double prices) {
         this.prices = prices;
+    }
+
+    // add setter and getter category
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Category getCategory() {
+        return this.category;
+    }
+
+    public void setSupplier(Set<Supplier> supplier) {
+        this.suppliers = supplier;
+    }
+
+    public Set<Supplier> getSupplier() {
+        return suppliers;
     }
 }
