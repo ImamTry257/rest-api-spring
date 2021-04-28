@@ -8,4 +8,4 @@ depedency:
 5. Validation I/O
 
 
-# 3 Menambah Relasi Entities pada JPA dan Spring Boot
+a. Menambah Relasi Entities pada JPA dan Spring Boot
